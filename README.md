@@ -1,0 +1,2 @@
+# AbstractOTDPlugins
+Plugins for OpenTabletDriver
