@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Numerics;
 using OpenTabletDriver.Plugin;
 using OpenTabletDriver.Plugin.Attributes;
@@ -12,31 +13,36 @@ namespace BezierInterpolator
     {
         public BezierInterp(ITimer scheduler) : base(scheduler)
         {
+            watch = new Stopwatch();
         }
         public override SyntheticTabletReport Interpolate()
         {
-            float alpha = (float)(counter++ * tabletRate / Hertz);
-            var lerp1 = Vector2.Lerp(targetOld, controlPoint, alpha);
-            var lerp2 = Vector2.Lerp(controlPoint, target, alpha);
-            SyntheticReport.Position = Vector2.Lerp(lerp1, lerp2, alpha);
+            float alpha = (float)(watch.Elapsed.TotalMilliseconds * tabletRate / Hertz);
+            var lerp1 = Vector3.Lerp(targetOld, controlPoint, alpha);
+            var lerp2 = Vector3.Lerp(controlPoint, target, alpha);
+            var res = Vector3.Lerp(lerp1, lerp2, alpha);
+            SyntheticReport.Position = new Vector2(res.X, res.Y);
+            SyntheticReport.Pressure = (uint)(res.Z);
             return SyntheticReport;
         }
 
         public override void UpdateState(SyntheticTabletReport report)
         {
+            watch.Restart();
             SyntheticReport = new SyntheticTabletReport(report);
+
             controlPoint = controlPointNext;
-            controlPointNext = SyntheticReport.Position;
+            controlPointNext = new Vector3(SyntheticReport.Position, SyntheticReport.Pressure);
+
             targetOld = target;
-            target = Vector2.Lerp(controlPoint, controlPointNext, 0.5f);
-            counter = 0;
+            target = Vector3.Lerp(controlPoint, controlPointNext, 0.5f);
         }
 
         [Property("Native report rate")]
         public float tabletRate { get; set; }
 
         private SyntheticTabletReport SyntheticReport;
-        private int counter = 0;
-        private Vector2 controlPointNext, controlPoint, target, targetOld;
+        private Stopwatch watch;
+        private Vector3 controlPointNext, controlPoint, target, targetOld;
     }
 }
