@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenTabletDriver.Plugin", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorPredictor", "VectorPredictor\VectorPredictor.csproj", "{5ACDC7EE-6EB5-4F95-89FF-63EBBB9BBCA6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BezierInterpolator", "BezierInterpolator\BezierInterpolator.csproj", "{205D626F-299D-4BC1-906A-707700E7C7ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{5ACDC7EE-6EB5-4F95-89FF-63EBBB9BBCA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5ACDC7EE-6EB5-4F95-89FF-63EBBB9BBCA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5ACDC7EE-6EB5-4F95-89FF-63EBBB9BBCA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{205D626F-299D-4BC1-906A-707700E7C7ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{205D626F-299D-4BC1-906A-707700E7C7ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{205D626F-299D-4BC1-906A-707700E7C7ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{205D626F-299D-4BC1-906A-707700E7C7ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
