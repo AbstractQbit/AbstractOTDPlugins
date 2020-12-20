@@ -15,6 +15,7 @@ namespace BezierInterpolator
         {
             watch = new Stopwatch();
         }
+
         public override SyntheticTabletReport Interpolate()
         {
             float alpha = (float)(watch.Elapsed.TotalMilliseconds * tabletRate / Hertz);
@@ -22,7 +23,7 @@ namespace BezierInterpolator
             var lerp2 = Vector3.Lerp(controlPoint, target, alpha);
             var res = Vector3.Lerp(lerp1, lerp2, alpha);
             SyntheticReport.Position = new Vector2(res.X, res.Y);
-            SyntheticReport.Pressure = (uint)(res.Z);
+            SyntheticReport.Pressure = SyntheticReport.Pressure == 0 ? 0 : (uint)(res.Z);
             return SyntheticReport;
         }
 
