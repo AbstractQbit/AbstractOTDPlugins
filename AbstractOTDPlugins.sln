@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30615.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PathExporter", "PathExporter\PathExporter.csproj", "{68717BFB-45FF-411F-9A10-9566AA23EFF9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenTabletDriver.Plugin", "..\OpenTabletDriver\OpenTabletDriver.Plugin\OpenTabletDriver.Plugin.csproj", "{49359233-BAF9-4D4B-A61E-8211256DBE7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenTabletDriver.Plugin", ".modules\OpenTabletDriver\OpenTabletDriver.Plugin\OpenTabletDriver.Plugin.csproj", "{49359233-BAF9-4D4B-A61E-8211256DBE7B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorPredictor", "VectorPredictor\VectorPredictor.csproj", "{5ACDC7EE-6EB5-4F95-89FF-63EBBB9BBCA6}"
 EndProject
