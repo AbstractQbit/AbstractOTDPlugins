@@ -1,0 +1,41 @@
+name: .NET Core
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  Build:
+    strategy:
+      matrix:
+        include:
+          - plugin: BezierInterpolator
+          - plugin: PathExporter
+          - plugin: VectorPredictor
+
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+      with:
+        submodules: recursive
+
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@main
+      with:
+        dotnet-version: '5.0.x'
+
+    - name: Publish
+      env:
+        plugin: ${{ matrix.plugin }}
+      run: dotnet publish $plugin --configuration Release -p:DebugType=embedded --framework net5 -o ./build/
+
+    - name: Upload binaries
+      uses: actions/upload-artifact@main
+      with:
+        name: ${{ matrix.plugin }}
+        path: |
+          ./build/*.dll
+          !./build/*.json
+          !./build/OpenTabletDriver.Plugin.dll

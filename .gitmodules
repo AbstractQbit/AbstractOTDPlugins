@@ -1,0 +1,4 @@
+[submodule ".modules/OpenTabletDriver"]
+	path = .modules/OpenTabletDriver
+	url = git@github.com:InfinityGhost/OpenTabletDriver.git
+	branch = master
