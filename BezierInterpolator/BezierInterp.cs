@@ -13,12 +13,11 @@ namespace BezierInterpolator
     {
         public BezierInterp(ITimer scheduler) : base(scheduler)
         {
-            watch = new Stopwatch();
         }
 
         public override SyntheticTabletReport Interpolate()
         {
-            float alpha = (float)(watch.Elapsed.TotalMilliseconds * tabletRate / Hertz);
+            float alpha = (float)((watch.Elapsed - lastReport).TotalMilliseconds * tabletRate / Hertz);
             var lerp1 = Vector3.Lerp(targetOld, controlPoint, alpha);
             var lerp2 = Vector3.Lerp(controlPoint, target, alpha);
             var res = Vector3.Lerp(lerp1, lerp2, alpha);
@@ -29,7 +28,7 @@ namespace BezierInterpolator
 
         public override void UpdateState(SyntheticTabletReport report)
         {
-            watch.Restart();
+            lastReport = watch.Elapsed;
             SyntheticReport = new SyntheticTabletReport(report);
 
             controlPoint = controlPointNext;
@@ -43,7 +42,8 @@ namespace BezierInterpolator
         public float tabletRate { get; set; }
 
         private SyntheticTabletReport SyntheticReport;
-        private Stopwatch watch;
+        private Stopwatch watch = Stopwatch.StartNew();
+        private TimeSpan lastReport;
         private Vector3 controlPointNext, controlPoint, target, targetOld;
     }
 }
