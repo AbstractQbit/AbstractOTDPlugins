@@ -31,19 +31,25 @@ namespace BezierInterpolator
             lastReport = watch.Elapsed;
             SyntheticReport = new SyntheticTabletReport(report);
 
+            emaTarget += emaWeight * (SyntheticReport.Position - emaTarget);
+
             controlPoint = controlPointNext;
-            controlPointNext = new Vector3(SyntheticReport.Position, SyntheticReport.Pressure);
+            controlPointNext = new Vector3(emaTarget, SyntheticReport.Pressure);
 
             targetOld = target;
             target = Vector3.Lerp(controlPoint, controlPointNext, 0.5f);
         }
 
-        [Property("Native report rate")]
-        public float tabletRate { get; set; }
+        [SliderProperty("Native report rate", 1, 500, 133), Unit("Hz")]
+        public float tabletRate { get; set; } = 133;
+
+        [SliderProperty("EMA Weight", 0.1f, 1.0f, 1.0f)]
+        public float emaWeight { get; set; } = 1;
 
         private SyntheticTabletReport SyntheticReport;
         private Stopwatch watch = Stopwatch.StartNew();
         private TimeSpan lastReport;
+        private Vector2 emaTarget;
         private Vector3 controlPointNext, controlPoint, target, targetOld;
     }
 }
