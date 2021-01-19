@@ -14,7 +14,7 @@ namespace BezierInterpolator
 
         public override SyntheticTabletReport Interpolate()
         {
-            float alpha = (float)(reportStopwatch.Elapsed.TotalSeconds * Hertz / reportMsAvg);
+            float alpha = (float)(reportStopwatch.Elapsed.TotalSeconds * Frequency / reportMsAvg);
             var lerp1 = Vector3.Lerp(targetOld, controlPoint, alpha);
             var lerp2 = Vector3.Lerp(controlPoint, target, alpha);
             var res = Vector3.Lerp(lerp1, lerp2, alpha);
