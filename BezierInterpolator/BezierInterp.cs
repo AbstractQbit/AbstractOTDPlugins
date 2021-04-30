@@ -15,7 +15,7 @@ namespace BezierInterpolator
 
         protected override void UpdateState()
         {
-            if (State is ITabletReport report & PenIsInRange())
+            if (State is ITabletReport report && PenIsInRange())
             {
                 float alpha = (float)(reportStopwatch.Elapsed.TotalSeconds * Frequency / reportMsAvg);
                 var lerp1 = Vector3.Lerp(targetOld, controlPoint, alpha);
