@@ -1,39 +1,49 @@
 ﻿using System.Numerics;
 using OpenTabletDriver.Plugin.Attributes;
-using OpenTabletDriver.Plugin.Tablet.Interpolator;
-using OpenTabletDriver.Plugin.Timers;
+using OpenTabletDriver.Plugin.Output;
+using OpenTabletDriver.Plugin.Tablet;
+using OpenTabletDriver.Plugin.Timing;
 
 namespace BezierInterpolator
 {
     [PluginName("BezierInterpolator")]
-    public class BezierInterp : Interpolator
+    public class BezierInterp : AsyncPositionedPipelineElement<IDeviceReport>
     {
-        public BezierInterp(ITimer scheduler) : base(scheduler)
+        public BezierInterp() : base()
         {
         }
 
-        public override SyntheticTabletReport Interpolate()
+        protected override void UpdateState()
         {
-            float alpha = (float)(reportStopwatch.Elapsed.TotalSeconds * Frequency / reportMsAvg);
-            var lerp1 = Vector3.Lerp(targetOld, controlPoint, alpha);
-            var lerp2 = Vector3.Lerp(controlPoint, target, alpha);
-            var res = Vector3.Lerp(lerp1, lerp2, alpha);
-            SyntheticReport.Position = new Vector2(res.X, res.Y);
-            SyntheticReport.Pressure = SyntheticReport.Pressure == 0 ? 0 : (uint)(res.Z);
-            return SyntheticReport;
+            if (State is ITabletReport report & PenIsInRange())
+            {
+                float alpha = (float)(reportStopwatch.Elapsed.TotalSeconds * Frequency / reportMsAvg);
+                var lerp1 = Vector3.Lerp(targetOld, controlPoint, alpha);
+                var lerp2 = Vector3.Lerp(controlPoint, target, alpha);
+                var res = Vector3.Lerp(lerp1, lerp2, alpha);
+                report.Position = new Vector2(res.X, res.Y);
+                report.Pressure = report.Pressure == 0 ? 0 : (uint)(res.Z);
+                State = report;
+                OnEmit();
+            }
         }
 
-        public override void UpdateState(SyntheticTabletReport report)
+        protected override void ConsumeState()
         {
-            SyntheticReport = new SyntheticTabletReport(report);
+            if (State is ITabletReport report)
+            {
+                var consumeDelta = (float)reportStopwatch.Restart().TotalMilliseconds;
+                if (consumeDelta < 150)
+                    reportMsAvg += ((consumeDelta - reportMsAvg) * 0.1f);
 
-            emaTarget += emaWeight * (SyntheticReport.Position - emaTarget);
+                emaTarget += emaWeight * (report.Position - emaTarget);
 
-            controlPoint = controlPointNext;
-            controlPointNext = new Vector3(emaTarget, SyntheticReport.Pressure);
+                controlPoint = controlPointNext;
+                controlPointNext = new Vector3(emaTarget, report.Pressure);
 
-            targetOld = target;
-            target = Vector3.Lerp(controlPoint, controlPointNext, 0.5f);
+                targetOld = target;
+                target = Vector3.Lerp(controlPoint, controlPointNext, 0.5f);
+            }
         }
 
         [Property("Pre-interpolation smoothing factor"), DefaultPropertyValue(1.0f), ToolTip
@@ -48,10 +58,14 @@ namespace BezierInterpolator
             get { return emaWeight; }
             set { emaWeight = System.Math.Clamp(value, 0.0f, 1.0f); }
         }
+
+        public override PipelinePosition Position => PipelinePosition.PostTransform;
+
         private float emaWeight;
 
-        private SyntheticTabletReport SyntheticReport;
         private Vector2 emaTarget;
         private Vector3 controlPointNext, controlPoint, target, targetOld;
+        private HPETDeltaStopwatch reportStopwatch = new HPETDeltaStopwatch();
+        private float reportMsAvg = 5;
     }
 }
