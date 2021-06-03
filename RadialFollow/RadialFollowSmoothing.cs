@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Numerics;
 using OpenTabletDriver.Plugin.Attributes;
-using OpenTabletDriver.Plugin.Output;
 using OpenTabletDriver.Plugin.Tablet;
 
 namespace RadialFollow
 {
     [PluginName("AbstractQbit's Radial Follow Smoothing")]
-    public class RadialFollowSmoothing : IPositionedPipelineElement<IDeviceReport>
+    public class RadialFollowSmoothing : IFilter
     {
-        public PipelinePosition Position => PipelinePosition.PreTransform;
+        public FilterStage FilterStage => FilterStage.PreTranspose;
 
         [Property("Outer Radius"), DefaultPropertyValue(50.0f), ToolTip
         (
@@ -20,9 +19,9 @@ namespace RadialFollow
             "instead of hard clamping the max distance between the tablet position and a cursor.\n\n" +
             "Default value is 50"
         )]
-        public double OuterRadius
+        public float OuterRadius
         {
-            get { return rOuter; }
+            get { return (float)rOuter; }
             set { rOuter = System.Math.Clamp(value, 0.0f, 1000000.0f); }
         }
         private double rOuter = 0;
@@ -36,9 +35,9 @@ namespace RadialFollow
             "Be aware that using a soft knee can implicitly reduce the actual inner radius.\n\n" +
             "Default value is 25"
         )]
-        public double InnerRadius
+        public float InnerRadius
         {
-            get { return rInner; }
+            get { return (float)rInner; }
             set { rInner = System.Math.Clamp(value, 0.0f, 1000000.0f); }
         }
         private double rInner = 0;
@@ -49,9 +48,9 @@ namespace RadialFollow
             "Possibe value range is 0.0001..1, higher values mean more smoothing (slower descent to the inner radius).\n\n" +
             "Default value is 0.85"
         )]
-        public double SmoothingCoefficient
+        public float SmoothingCoefficient
         {
-            get { return smoothCoef; }
+            get { return (float)smoothCoef; }
             set { smoothCoef = System.Math.Clamp(value, 0.0001f, 1.0f); }
         }
         private double smoothCoef;
@@ -64,9 +63,9 @@ namespace RadialFollow
             "Be aware that using a soft knee can implicitly reduce the actual inner radius.\n\n" +
             "Default value is 0"
         )]
-        public double SoftKneeScale
+        public float SoftKneeScale
         {
-            get { return knScale; }
+            get { return (float)knScale; }
             set { knScale = System.Math.Clamp(value, 0.0f, 10.0f); updateDerivedParams(); }
         }
         private double knScale;
@@ -77,9 +76,9 @@ namespace RadialFollow
             "Possibe value range is 0..1, 0 means no smoothing past outer radius, 1 means 100% of the smoothing gets through.\n\n" +
             "Default value is 0"
         )]
-        public double SmoothingLeakCoefficient
+        public float SmoothingLeakCoefficient
         {
-            get { return leakCoef; }
+            get { return (float)leakCoef; }
             set { leakCoef = System.Math.Clamp(value, 0.0f, 1.0f); }
         }
         private double leakCoef;
@@ -88,24 +87,17 @@ namespace RadialFollow
         {
         }
 
-        public event Action<IDeviceReport> Emit;
-
-        public void Consume(IDeviceReport value)
+        public Vector2 Filter(Vector2 point)
         {
-            if (value is ITabletReport report)
-            {
-                Vector2 direction = report.Position - cursor;
-                double distance = direction.Length();
-                direction = Vector2.Normalize(direction);
+            Vector2 direction = point - cursor;
+            double distance = direction.Length();
+            direction = Vector2.Normalize(direction);
 
-                double rDyn = rOuterScaledFn(distance, xOffset, scaleComp);
+            double rDyn = rOuterScaledFn(distance, xOffset, scaleComp);
 
-                float distToMove = (float)Math.Max(distance - rDyn, 0);
-                cursor = cursor + Vector2.Multiply(direction, distToMove);
-                report.Position = cursor;
-                value = report;
-            }
-            Emit?.Invoke(value);
+            float distToMove = (float)Math.Max(distance - rDyn, 0);
+            cursor = cursor + Vector2.Multiply(direction, distToMove);
+            return cursor;
         }
 
         Vector2 cursor;
