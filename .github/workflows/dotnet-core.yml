@@ -11,6 +11,7 @@ jobs:
       matrix:
         include:
           - plugin: BezierInterpolator
+          - plugin: RadialFollow
 
     runs-on: ubuntu-latest
     steps:
