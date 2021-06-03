@@ -11,8 +11,6 @@ jobs:
       matrix:
         include:
           - plugin: BezierInterpolator
-          - plugin: PathExporter
-          - plugin: VectorPredictor
 
     runs-on: ubuntu-latest
     steps:

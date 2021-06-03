@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30615.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PathExporter", "PathExporter\PathExporter.csproj", "{68717BFB-45FF-411F-9A10-9566AA23EFF9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenTabletDriver.Plugin", ".modules\OpenTabletDriver\OpenTabletDriver.Plugin\OpenTabletDriver.Plugin.csproj", "{49359233-BAF9-4D4B-A61E-8211256DBE7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorPredictor", "VectorPredictor\VectorPredictor.csproj", "{5ACDC7EE-6EB5-4F95-89FF-63EBBB9BBCA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BezierInterpolator", "BezierInterpolator\BezierInterpolator.csproj", "{205D626F-299D-4BC1-906A-707700E7C7ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BezierInterpolator", "BezierInterpolator\BezierInterpolator.csproj", "{205D626F-299D-4BC1-906A-707700E7C7ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadialFollow", "RadialFollow\RadialFollow.csproj", "{1A38AD2D-E0EB-4B1A-92F9-250F2CCA222E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,22 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{68717BFB-45FF-411F-9A10-9566AA23EFF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{68717BFB-45FF-411F-9A10-9566AA23EFF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{68717BFB-45FF-411F-9A10-9566AA23EFF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{68717BFB-45FF-411F-9A10-9566AA23EFF9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{49359233-BAF9-4D4B-A61E-8211256DBE7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{49359233-BAF9-4D4B-A61E-8211256DBE7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49359233-BAF9-4D4B-A61E-8211256DBE7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49359233-BAF9-4D4B-A61E-8211256DBE7B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5ACDC7EE-6EB5-4F95-89FF-63EBBB9BBCA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5ACDC7EE-6EB5-4F95-89FF-63EBBB9BBCA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5ACDC7EE-6EB5-4F95-89FF-63EBBB9BBCA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5ACDC7EE-6EB5-4F95-89FF-63EBBB9BBCA6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{205D626F-299D-4BC1-906A-707700E7C7ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{205D626F-299D-4BC1-906A-707700E7C7ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{205D626F-299D-4BC1-906A-707700E7C7ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{205D626F-299D-4BC1-906A-707700E7C7ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A38AD2D-E0EB-4B1A-92F9-250F2CCA222E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A38AD2D-E0EB-4B1A-92F9-250F2CCA222E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A38AD2D-E0EB-4B1A-92F9-250F2CCA222E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A38AD2D-E0EB-4B1A-92F9-250F2CCA222E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
