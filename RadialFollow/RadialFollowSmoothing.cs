@@ -71,7 +71,7 @@ namespace RadialFollow
         }
         private double knScale;
 
-        [Property("Smoothing Leak Coefficient"), DefaultPropertyValue(0.9f), ToolTip
+        [Property("Smoothing Leak Coefficient"), DefaultPropertyValue(0.0f), ToolTip
         (
             "Smoothing leak coefficient allowes for input smooting to continue past outer radius at a reduced rate.\n\n" +
             "Possibe value range is 0..1, 0 means no smoothing past outer radius, 1 means 100% of the smoothing gets through.\n\n" +
