@@ -45,7 +45,7 @@ namespace RadialFollow
         [Property("Smoothing Coefficient"), DefaultPropertyValue(0.85f), ToolTip
         (
             "Smoothing coefficient determines how fast or slow the cursor will descend from the outer radius to the inner.\n\n" +
-            "Possibe value range is 0.0001..1, higher values mean more smoothing (slower descent to the inner radius).\n\n" +
+            "Possible value range is 0.0001..1, higher values mean more smoothing (slower descent to the inner radius).\n\n" +
             "Default value is 0.85"
         )]
         public float SmoothingCoefficient
@@ -58,7 +58,7 @@ namespace RadialFollow
         [Property("Soft Knee Scale"), DefaultPropertyValue(0.0f), ToolTip
         (
             "Soft knee scale determines how soft the transition between smoothing inside and outside the outer radius is.\n\n" +
-            "Possibe value range is 0..10, higher values mean softer transition.\n" +
+            "Possible value range is 0..10, higher values mean softer transition.\n" +
             "The effect is somewhat logarithmic, i.e. most of the change happens closer to zero.\n" +
             "Be aware that using a soft knee can implicitly reduce the actual inner radius.\n\n" +
             "Default value is 0"
@@ -72,8 +72,8 @@ namespace RadialFollow
 
         [Property("Smoothing Leak Coefficient"), DefaultPropertyValue(0.0f), ToolTip
         (
-            "Smoothing leak coefficient allowes for input smooting to continue past outer radius at a reduced rate.\n\n" +
-            "Possibe value range is 0..1, 0 means no smoothing past outer radius, 1 means 100% of the smoothing gets through.\n\n" +
+            "Smoothing leak coefficient allows for input smooting to continue past outer radius at a reduced rate.\n\n" +
+            "Possible value range is 0..1, 0 means no smoothing past outer radius, 1 means 100% of the smoothing gets through.\n\n" +
             "Default value is 0"
         )]
         public float SmoothingLeakCoefficient
