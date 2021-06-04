@@ -1,0 +1,36 @@
+name: .NET Core manual run
+
+on: 
+  workflow_dispatch:
+    inputs:
+      plugin:
+        description: 'Project to build'     
+        required: true
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+      with:
+        submodules: recursive
+
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@main
+      with:
+        dotnet-version: '5.0.x'
+
+    - name: Publish
+      env:
+        plugin: ${{ github.event.inputs.plugin }}
+      run: dotnet publish $plugin --configuration Release -p:DebugType=embedded --framework net5 -o ./build/
+
+    - name: Upload binaries
+      uses: actions/upload-artifact@main
+      with:
+        name: ${{ github.event.inputs.plugin }}
+        path: |
+          ./build/*.dll
+          !./build/*.json
+          !./build/OpenTabletDriver.Plugin.dll
