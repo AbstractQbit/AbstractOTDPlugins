@@ -155,7 +155,7 @@ namespace RadialFollow
 
         double getScaleComp() => derivKneeScaled(getXOffest());
 
-        double getLpmm() => Info.Driver.Tablet.Digitizer.MaxX / Info.Driver.Tablet.Digitizer.Width;
+        double getLpmm() => Info.Driver.Tablet.Properties.Specifications.Digitizer.MaxX / Info.Driver.Tablet.Properties.Specifications.Digitizer.Width;
         double rOutermm => getLpmm() * rOuter;
         double rInnermm => getLpmm() * rInner;
 
