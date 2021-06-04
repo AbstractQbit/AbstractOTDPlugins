@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using OpenTabletDriver.Plugin;
 using OpenTabletDriver.Plugin.Attributes;
 using OpenTabletDriver.Plugin.Tablet;
 
@@ -10,14 +11,14 @@ namespace RadialFollow
     {
         public FilterStage FilterStage => FilterStage.PreTranspose;
 
-        [Property("Outer Radius"), DefaultPropertyValue(50.0f), ToolTip
+        [Property("Outer Radius"), DefaultPropertyValue(0.5f), ToolTip
         (
             "Outer radius defines the max distance the cursor can lag behind the actual reading.\n\n" +
-            "Units of measurement are raw points on the digitizer grid.\n" +
+            "Unit of measurement is mm.\n" +
             "The value should be >= 0 and inner radius.\n" +
             "If smoothing leak is used, defines the point at which smoothing will be reduced,\n" +
             "instead of hard clamping the max distance between the tablet position and a cursor.\n\n" +
-            "Default value is 50"
+            "Default value is 0.5"
         )]
         public float OuterRadius
         {
@@ -26,14 +27,14 @@ namespace RadialFollow
         }
         private double rOuter = 0;
 
-        [Property("Inner Radius"), DefaultPropertyValue(25.0f), ToolTip
+        [Property("Inner Radius"), DefaultPropertyValue(0.25f), ToolTip
         (
             "Inner radius defines the max distance the tablet reading can deviate from the cursor without moving it.\n" +
             "This effectively creates a deadzone in which no movement is produced.\n\n" +
-            "Units of measurement are raw points on the digitizer grid.\n" +
+            "Unit of measurement is mm.\n" +
             "The value should be >= 0 and <= outer radius.\n" +
             "Be aware that using a soft knee can implicitly reduce the actual inner radius.\n\n" +
-            "Default value is 25"
+            "Default value is 0.25"
         )]
         public float InnerRadius
         {
@@ -146,12 +147,16 @@ namespace RadialFollow
 
         double getScaleComp() => derivKneeScaled(getXOffest());
 
+        double getLpmm() => Info.Driver.Tablet.Digitizer.MaxX / Info.Driver.Tablet.Digitizer.Width;
+        double rOutermm => getLpmm() * rOuter;
+        double rInnermm => getLpmm() * rInner;
+
         double leakedFn(double x, double offset, double scaleComp) => kneeScaled(x + offset) * (1 - leakCoef) + x * leakCoef * scaleComp;
 
         double smoothedFn(double x, double offset, double scaleComp) => leakedFn(x * smoothCoef / scaleComp, offset, scaleComp);
 
-        double rInnerShiftedFn(double x, double offset, double scaleComp) => smoothedFn(x + (rInner * (1 - smoothCoef) / (rOuter * smoothCoef)), offset, scaleComp);
+        double rInnerShiftedFn(double x, double offset, double scaleComp) => smoothedFn(x + (rInnermm * (1 - smoothCoef) / (rOuter * smoothCoef)), offset, scaleComp);
 
-        double rOuterScaledFn(double x, double offset, double scaleComp) => rOuter * rInnerShiftedFn(x / rOuter, offset, scaleComp);
+        double rOuterScaledFn(double x, double offset, double scaleComp) => rOutermm * rInnerShiftedFn(x / rOutermm, offset, scaleComp);
     }
 }
