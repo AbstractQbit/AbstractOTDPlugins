@@ -11,14 +11,14 @@ namespace RadialFollow
     {
         public FilterStage FilterStage => FilterStage.PreTranspose;
 
-        [Property("Outer Radius"), DefaultPropertyValue(0.5f), ToolTip
+        [Property("Outer Radius"), DefaultPropertyValue(0.75f), Unit("mm"), ToolTip
         (
             "Outer radius defines the max distance the cursor can lag behind the actual reading.\n\n" +
             "Unit of measurement is mm.\n" +
             "The value should be >= 0 and inner radius.\n" +
             "If smoothing leak is used, defines the point at which smoothing will be reduced,\n" +
             "instead of hard clamping the max distance between the tablet position and a cursor.\n\n" +
-            "Default value is 0.5"
+            "Default value is 0.75 mm"
         )]
         public float OuterRadius
         {
@@ -27,14 +27,13 @@ namespace RadialFollow
         }
         private double rOuter = 0;
 
-        [Property("Inner Radius"), DefaultPropertyValue(0.25f), ToolTip
+        [Property("Inner Radius"), DefaultPropertyValue(0.1f), Unit("mm"), ToolTip
         (
             "Inner radius defines the max distance the tablet reading can deviate from the cursor without moving it.\n" +
             "This effectively creates a deadzone in which no movement is produced.\n\n" +
             "Unit of measurement is mm.\n" +
-            "The value should be >= 0 and <= outer radius.\n" +
-            "Be aware that using a soft knee can implicitly reduce the actual inner radius.\n\n" +
-            "Default value is 0.25"
+            "The value should be >= 0 and <= outer radius.\n\n" +
+            "Default value is 0.1 mm"
         )]
         public float InnerRadius
         {
@@ -43,11 +42,11 @@ namespace RadialFollow
         }
         private double rInner = 0;
 
-        [Property("Smoothing Coefficient"), DefaultPropertyValue(0.85f), ToolTip
+        [Property("Smoothing Coefficient"), DefaultPropertyValue(0.9f), ToolTip
         (
             "Smoothing coefficient determines how fast or slow the cursor will descend from the outer radius to the inner.\n\n" +
             "Possible value range is 0.0001..1, higher values mean more smoothing (slower descent to the inner radius).\n\n" +
-            "Default value is 0.85"
+            "Default value is 0.9"
         )]
         public float SmoothingCoefficient
         {
@@ -56,13 +55,12 @@ namespace RadialFollow
         }
         private double smoothCoef;
 
-        [Property("Soft Knee Scale"), DefaultPropertyValue(0.0f), ToolTip
+        [Property("Soft Knee Scale"), DefaultPropertyValue(0.3f), ToolTip
         (
             "Soft knee scale determines how soft the transition between smoothing inside and outside the outer radius is.\n\n" +
             "Possible value range is 0..10, higher values mean softer transition.\n" +
-            "The effect is somewhat logarithmic, i.e. most of the change happens closer to zero.\n" +
-            "Be aware that using a soft knee can implicitly reduce the actual inner radius.\n\n" +
-            "Default value is 0"
+            "The effect is somewhat logarithmic, i.e. most of the change happens closer to zero.\n\n" +
+            "Default value is 0.3"
         )]
         public float SoftKneeScale
         {
@@ -94,9 +92,9 @@ namespace RadialFollow
             double distance = direction.Length();
             direction = Vector2.Normalize(direction);
 
-            double rDyn = rOuterScaledFn(distance, xOffset, scaleComp);
 
-            float distToMove = (float)Math.Max(distance - rDyn, 0);
+            float distToMove = (float)deltaFn(distance, xOffset, scaleComp);
+
             cursor = cursor + Vector2.Multiply(direction, distToMove);
             return cursor;
         }
@@ -149,14 +147,14 @@ namespace RadialFollow
 
         double getLpmm() => Info.Driver.Tablet.Digitizer.MaxX / Info.Driver.Tablet.Digitizer.Width;
         double rOutermm => getLpmm() * rOuter;
-        double rInnermm => getLpmm() * rInner;
+        double rInnermm => getLpmm() * Math.Min(rInner, rOuter - 0.0001f);
 
         double leakedFn(double x, double offset, double scaleComp) => kneeScaled(x + offset) * (1 - leakCoef) + x * leakCoef * scaleComp;
 
         double smoothedFn(double x, double offset, double scaleComp) => leakedFn(x * smoothCoef / scaleComp, offset, scaleComp);
 
-        double rInnerShiftedFn(double x, double offset, double scaleComp) => smoothedFn(x + (rInnermm * (1 - smoothCoef) / (rOuter * smoothCoef)), offset, scaleComp);
+        double scaleToOuter(double x, double offset, double scaleComp) => (rOutermm - rInnermm) * smoothedFn(x / (rOutermm - rInnermm), offset, scaleComp);
 
-        double rOuterScaledFn(double x, double offset, double scaleComp) => rOutermm * rInnerShiftedFn(x / rOutermm, offset, scaleComp);
+        double deltaFn(double x, double offset, double scaleComp) => x > rInnermm ? x - scaleToOuter(x - rInnermm, offset, scaleComp) - rInnermm : 0;
     }
 }
