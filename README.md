@@ -14,7 +14,7 @@ The value should be >= 0 and inner radius.
 If smoothing leak is used, defines the point at which smoothing will be reduced,  
 instead of hard clamping the max distance between the tablet position and a cursor.
 
-Default value is 0.75 mm
+Default value is 1 mm
 
 ### Inner Radius
 Inner radius defines the max distance the tablet reading can deviate from the cursor without moving it.
@@ -23,22 +23,22 @@ This effectively creates a deadzone in which no movement is produced.
 Unit of measurement is mm.  
 The value should be >= 0 and <= outer radius.
 
-Default value is 0.1 mm
+Default value is 0.05 mm
 
 ### Smoothing Coefficient
 Smoothing coefficient determines how fast or slow the cursor will descend from the outer radius to the inner.
 
 Possible value range is 0.0001..1, higher values mean more smoothing (slower descent to the inner radius).
 
-Default value is 0.9
+Default value is 0.92
 
 ### Soft Knee Scale
 Soft knee scale determines how soft the transition between smoothing inside and outside the outer radius is.
 
-Possible value range is 0..10, higher values mean softer transition.  
+Possible value range is 0..100, higher values mean softer transition.  
 The effect is somewhat logarithmic, i.e. most of the change happens closer to zero.
 
-Default value is 0.3
+Default value is 3
 
 ### Smoothing Leak Coefficient
 Smoothing leak coefficient allows for input smooting to continue past outer radius at a reduced rate.

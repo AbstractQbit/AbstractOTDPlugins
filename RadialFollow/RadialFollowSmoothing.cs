@@ -3,6 +3,7 @@ using System.Numerics;
 using OpenTabletDriver.Plugin;
 using OpenTabletDriver.Plugin.Attributes;
 using OpenTabletDriver.Plugin.Tablet;
+using OpenTabletDriver.Plugin.Timing;
 
 namespace RadialFollow
 {
@@ -11,14 +12,14 @@ namespace RadialFollow
     {
         public FilterStage FilterStage => FilterStage.PreTranspose;
 
-        [Property("Outer Radius"), DefaultPropertyValue(0.75f), Unit("mm"), ToolTip
+        [Property("Outer Radius"), DefaultPropertyValue(1f), Unit("mm"), ToolTip
         (
             "Outer radius defines the max distance the cursor can lag behind the actual reading.\n\n" +
             "Unit of measurement is mm.\n" +
             "The value should be >= 0 and inner radius.\n" +
             "If smoothing leak is used, defines the point at which smoothing will be reduced,\n" +
             "instead of hard clamping the max distance between the tablet position and a cursor.\n\n" +
-            "Default value is 0.75 mm"
+            "Default value is 1 mm"
         )]
         public float OuterRadius
         {
@@ -27,13 +28,13 @@ namespace RadialFollow
         }
         private double rOuter = 0;
 
-        [Property("Inner Radius"), DefaultPropertyValue(0.1f), Unit("mm"), ToolTip
+        [Property("Inner Radius"), DefaultPropertyValue(0.05f), Unit("mm"), ToolTip
         (
             "Inner radius defines the max distance the tablet reading can deviate from the cursor without moving it.\n" +
             "This effectively creates a deadzone in which no movement is produced.\n\n" +
             "Unit of measurement is mm.\n" +
             "The value should be >= 0 and <= outer radius.\n\n" +
-            "Default value is 0.1 mm"
+            "Default value is 0.05 mm"
         )]
         public float InnerRadius
         {
@@ -42,11 +43,11 @@ namespace RadialFollow
         }
         private double rInner = 0;
 
-        [Property("Smoothing Coefficient"), DefaultPropertyValue(0.9f), ToolTip
+        [Property("Smoothing Coefficient"), DefaultPropertyValue(0.92f), ToolTip
         (
             "Smoothing coefficient determines how fast or slow the cursor will descend from the outer radius to the inner.\n\n" +
             "Possible value range is 0.0001..1, higher values mean more smoothing (slower descent to the inner radius).\n\n" +
-            "Default value is 0.9"
+            "Default value is 0.92"
         )]
         public float SmoothingCoefficient
         {
@@ -55,17 +56,17 @@ namespace RadialFollow
         }
         private double smoothCoef;
 
-        [Property("Soft Knee Scale"), DefaultPropertyValue(0.3f), ToolTip
+        [Property("Soft Knee Scale"), DefaultPropertyValue(3f), ToolTip
         (
             "Soft knee scale determines how soft the transition between smoothing inside and outside the outer radius is.\n\n" +
-            "Possible value range is 0..10, higher values mean softer transition.\n" +
+            "Possible value range is 0..100, higher values mean softer transition.\n" +
             "The effect is somewhat logarithmic, i.e. most of the change happens closer to zero.\n\n" +
-            "Default value is 0.3"
+            "Default value is 3"
         )]
         public float SoftKneeScale
         {
             get { return (float)knScale; }
-            set { knScale = System.Math.Clamp(value, 0.0f, 10.0f); updateDerivedParams(); }
+            set { knScale = System.Math.Clamp(value, 0.0f, 100.0f); updateDerivedParams(); }
         }
         private double knScale;
 
@@ -92,10 +93,12 @@ namespace RadialFollow
             double distance = direction.Length();
             direction = Vector2.Normalize(direction);
 
-
             float distToMove = (float)deltaFn(distance, xOffset, scaleComp);
-
             cursor = cursor + Vector2.Multiply(direction, distToMove);
+
+            if (!(float.IsFinite(cursor.X) & float.IsFinite(cursor.Y) & stopwatch.Restart().TotalMilliseconds < 50))
+                cursor = point;
+
             return cursor;
         }
 
@@ -114,6 +117,8 @@ namespace RadialFollow
                 scaleComp = 1;
             }
         }
+
+        HPETDeltaStopwatch stopwatch = new HPETDeltaStopwatch(true);
 
         /// Math functions
 
