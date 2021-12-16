@@ -41,10 +41,10 @@ namespace RadialFollow
             set { leakCoef = System.Math.Clamp(value, 0.0f, 1.0f); }
         }
         private double leakCoef;
-
         public float SampleRadialCurve(float dist) => (float)deltaFn(dist, xOffset, scaleComp);
-
         public double ResetMs = 50;
+        public double GridScale = 1;
+
         Vector2 cursor;
         HPETDeltaStopwatch stopwatch = new HPETDeltaStopwatch(true);
 
@@ -107,15 +107,19 @@ namespace RadialFollow
 
         double getScaleComp() => derivKneeScaled(getXOffest());
 
-        double rOuterAdjusted => Math.Max(rInner, rOuter + -0.0001f);
-        double rInnermm => rInner;
+        double rOuterAdjusted => GridScale * Math.Max(rOuter, rInner + 0.0001f);
+        double rInnerAdjusted => GridScale * rInner;
 
-        double leakedFn(double x, double offset, double scaleComp) => kneeScaled(x + offset) * (1 - leakCoef) + x * leakCoef * scaleComp;
+        double leakedFn(double x, double offset, double scaleComp)
+        => kneeScaled(x + offset) * (1 - leakCoef) + x * leakCoef * scaleComp;
 
-        double smoothedFn(double x, double offset, double scaleComp) => leakedFn(x * smoothCoef / scaleComp, offset, scaleComp);
+        double smoothedFn(double x, double offset, double scaleComp)
+        => leakedFn(x * smoothCoef / scaleComp, offset, scaleComp);
 
-        double scaleToOuter(double x, double offset, double scaleComp) => (rOuterAdjusted - rInnermm) * smoothedFn(x / (rOuterAdjusted - rInnermm), offset, scaleComp);
+        double scaleToOuter(double x, double offset, double scaleComp)
+        => (rOuterAdjusted - rInnerAdjusted) * smoothedFn(x / (rOuterAdjusted - rInnerAdjusted), offset, scaleComp);
 
-        double deltaFn(double x, double offset, double scaleComp) => x > rInnermm ? x - scaleToOuter(x - rInnermm, offset, scaleComp) - rInnermm : 0;
+        double deltaFn(double x, double offset, double scaleComp)
+        => x > rInnerAdjusted ? x - scaleToOuter(x - rInnerAdjusted, offset, scaleComp) - rInnerAdjusted : 0;
     }
 }
