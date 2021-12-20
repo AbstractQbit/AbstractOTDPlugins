@@ -1,9 +1,9 @@
-name: .NET Core
+name: Latest OTD build
 
 on:
-  push:
-    branches:
-      - master
+  schedule:
+    - cron:  '0 5 * * *'
+  workflow_dispatch:
 
 jobs:
   Build:
@@ -17,8 +17,11 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@main
-      with:
-        submodules: recursive
+
+    - name: Get latest OTD
+      run: |
+         git submodule update --init --force --remote --merge
+         echo "OTD_sha=$(git submodule status | cut -c 2-8)" >> $GITHUB_ENV
 
     - name: Setup dotnet
       uses: actions/setup-dotnet@main
@@ -27,13 +30,13 @@ jobs:
 
     - name: Publish
       env:
-        plugin: ${{ matrix.plugin }}
+        plugin: ${{ github.event.inputs.plugin }}
       run: dotnet publish $plugin --configuration Release -f net6.0 -p:DebugType=embedded -o ./build/
 
     - name: Upload binaries
       uses: actions/upload-artifact@main
       with:
-        name: ${{ matrix.plugin }}
+        name: ${{ format('{0}_OTD_{1}', github.event.inputs.plugin, env.OTD_sha) }}
         path: |
           ./build/*.dll
           !./build/*.json
