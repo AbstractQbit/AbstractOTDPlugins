@@ -12,7 +12,7 @@ namespace RadialFollow
         public RadialFollowSmoothingTabletSpace() : base() { }
         public PipelinePosition Position => PipelinePosition.PreTransform;
 
-        [Property("Outer Radius"), DefaultPropertyValue(1.0f), Unit("mm"), ToolTip
+        [Property("Outer Radius"), DefaultPropertyValue(1.0d), Unit("mm"), ToolTip
         (
             "Outer radius defines the max distance the cursor can lag behind the actual reading.\n\n" +
             "Unit of measurement is millimetres.\n" +
@@ -27,7 +27,7 @@ namespace RadialFollow
             set { radialCore.OuterRadius = value; }
         }
 
-        [Property("Inner Radius"), DefaultPropertyValue(0.0f), Unit("mm"), ToolTip
+        [Property("Inner Radius"), DefaultPropertyValue(0.0d), Unit("mm"), ToolTip
         (
             "Inner radius defines the max distance the tablet reading can deviate from the cursor without moving it.\n" +
             "This effectively creates a deadzone in which no movement is produced.\n\n" +
@@ -41,7 +41,7 @@ namespace RadialFollow
             set { radialCore.InnerRadius = value; }
         }
 
-        [Property("Initial Smoothing Coefficient"), DefaultPropertyValue(0.95f), ToolTip
+        [Property("Initial Smoothing Coefficient"), DefaultPropertyValue(0.95d), ToolTip
         (
             "Smoothing coefficient determines how fast or slow the cursor will descend from the outer radius to the inner.\n\n" +
             "Possible value range is 0.0001..1, higher values mean more smoothing (slower descent to the inner radius).\n\n" +
@@ -53,7 +53,7 @@ namespace RadialFollow
             set { radialCore.SmoothingCoefficient = value; }
         }
 
-        [Property("Soft Knee Scale"), DefaultPropertyValue(2.0f), ToolTip
+        [Property("Soft Knee Scale"), DefaultPropertyValue(2.0d), ToolTip
         (
             "Soft knee scale determines how soft the transition between smoothing inside and outside the outer radius is.\n\n" +
             "Possible value range is 0..100, higher values mean softer transition.\n" +
@@ -66,7 +66,7 @@ namespace RadialFollow
             set { radialCore.SoftKneeScale = value; }
         }
 
-        [Property("Smoothing Leak Coefficient"), DefaultPropertyValue(0.0f), ToolTip
+        [Property("Smoothing Leak Coefficient"), DefaultPropertyValue(0.0d), ToolTip
         (
             "Smoothing leak coefficient allows for input smooting to continue past outer radius at a reduced rate.\n\n" +
             "Possible value range is 0..1, 0 means no smoothing past outer radius, 1 means 100% of the smoothing gets through.\n\n" +
