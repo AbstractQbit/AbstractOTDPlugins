@@ -30,13 +30,13 @@ jobs:
 
     - name: Publish
       env:
-        plugin: ${{ github.event.inputs.plugin }}
+        plugin: ${{ matrix.plugin }}
       run: dotnet publish $plugin --configuration Release -f net6.0 -p:DebugType=embedded -o ./build/
 
     - name: Upload binaries
       uses: actions/upload-artifact@main
       with:
-        name: ${{ format('{0}_OTD_{1}', github.event.inputs.plugin, env.OTD_sha) }}
+        name: ${{ format('{0} OTD_{1}', matrix.plugin, env.OTD_sha) }}
         path: |
           ./build/*.dll
           !./build/*.json
