@@ -53,12 +53,12 @@ namespace RadialFollow
             set { radialCore.SmoothingCoefficient = value; }
         }
 
-        [Property("Soft Knee Scale"), DefaultPropertyValue(2.0d), ToolTip
+        [Property("Soft Knee Scale"), DefaultPropertyValue(1.0d), ToolTip
         (
             "Soft knee scale determines how soft the transition between smoothing inside and outside the outer radius is.\n\n" +
             "Possible value range is 0..100, higher values mean softer transition.\n" +
             "The effect is somewhat logarithmic, i.e. most of the change happens closer to zero.\n\n" +
-            "Default value is 2.0"
+            "Default value is 1.0"
         )]
         public double SoftKneeScale
         {
