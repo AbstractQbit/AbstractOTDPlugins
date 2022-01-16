@@ -1,5 +1,5 @@
 # AbstractOTDPlugins
-A set of plugins for OpenTabletDriver.
+A set of plugins for [OpenTabletDriver](https://github.com/OpenTabletDriver/OpenTabletDriver).
 
 
 ## Bezier interpolator
