@@ -1,8 +1,8 @@
 name: Latest OTD build
 
 on:
-  schedule:
-    - cron:  '0 5 * * 1'
+  # schedule:
+  #   - cron:  '0 5 * * 1'
   workflow_dispatch:
 
 jobs:
@@ -12,6 +12,7 @@ jobs:
         include:
           - plugin: BezierInterpolator
           - plugin: RadialFollow
+          - plugin: TouchTapping
 
     runs-on: ubuntu-latest
     steps:

@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BezierInterpolator", "Bezie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadialFollow", "RadialFollow\RadialFollow.csproj", "{1A38AD2D-E0EB-4B1A-92F9-250F2CCA222E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TouchTapping", "TouchTapping\TouchTapping.csproj", "{E0439839-9F9D-4DAD-8A7E-1ED0A027555C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

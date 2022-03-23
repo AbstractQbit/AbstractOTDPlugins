@@ -12,6 +12,7 @@ jobs:
         include:
           - plugin: BezierInterpolator
           - plugin: RadialFollow
+          - plugin: TouchTapping
 
     runs-on: ubuntu-latest
     steps:
