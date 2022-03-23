@@ -14,6 +14,11 @@ namespace TouchTapping
     [PluginName("Touch Tapping")]
     public class TouchTappingPlugin : IPositionedPipelineElement<IDeviceReport>
     {
+        [Property("Key 1"), DefaultPropertyValue("Z")]
+        public string K1 { set; get; }
+        [Property("Key 2"), DefaultPropertyValue("X")]
+        public string K2 { set; get; }
+
         [BooleanProperty("Force full alt", "Keys always alternate (still only 2 simultaneous touches are allowed)"), DefaultPropertyValue(false)]
         public bool ForceAlternate { set; get; }
 
@@ -70,10 +75,30 @@ namespace TouchTapping
             ActiveBinds[kn] = null;
         }
 
+        [OnDependencyLoad]
+        public void SetBinds()
+        {
+            if (!VirtualKeyboard.SupportedKeys.Contains(K1))
+            {
+                Log.WriteNotify("Touch Tapping", "K1 is set incorrectly");
+                return;
+            }
+            if (!VirtualKeyboard.SupportedKeys.Contains(K2))
+            {
+                Log.WriteNotify("Touch Tapping", "K2 is set incorrectly");
+                return;
+            }
+            Binds = new Keybind[]
+            {
+                new Keybind{Key=K1},
+                new Keybind{Key=K2},
+            };
+        }
+
         Keybind[] Binds = new Keybind[]
         {
             new Keybind{Key="Z"},
-            new Keybind{Key="C"},
+            new Keybind{Key="X"},
         };
 
         Keybind[] ActiveBinds = new Keybind[2];
