@@ -14,6 +14,9 @@ namespace TouchTapping
     [PluginName("Touch Tapping")]
     public class TouchTappingPlugin : IPositionedPipelineElement<IDeviceReport>
     {
+        [BooleanProperty("Force full alt", "Keys always alternate (still only 2 simultaneous touches are allowed)"), DefaultPropertyValue(false)]
+        public bool ForceAlternate { set; get; }
+
         public PipelinePosition Position => PipelinePosition.PreTransform;
 
         public TouchTappingPlugin() : base() { }
@@ -42,10 +45,20 @@ namespace TouchTapping
             Emit?.Invoke(value);
         }
 
+        int fullAltNextBind = 0;
         void HandlePress(int kn, Vector2 pos)
         {
-            var bind = Binds.Where(a => !ActiveBinds.Contains(a))
+            Keybind bind;
+            if (ForceAlternate)
+            {
+                bind = Binds[fullAltNextBind];
+                fullAltNextBind = fullAltNextBind == 0 ? 1 : 0;
+            }
+            else
+            {
+                bind = Binds.Where(a => !ActiveBinds.Contains(a))
                             .MinBy(a => (a.Lastpos - pos).Length());
+            }
             VirtualKeyboard.Press(bind.Key);
             bind.Lastpos = pos;
             ActiveBinds[kn] = bind;
@@ -64,9 +77,6 @@ namespace TouchTapping
         };
 
         Keybind[] ActiveBinds = new Keybind[2];
-
-        [Resolved]
-        public IDriver Driver;
 
         [Resolved]
         public IVirtualKeyboard VirtualKeyboard;
