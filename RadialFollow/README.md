@@ -1,6 +1,6 @@
 # Radial Follow Smoothing
 The Ultimate Smoothing Plugin, providing cursor stability while still allowing to hit fast jumps with ease.  
-To view how different parameters affect the operating curve, open [RadialFollow/RadialFollowGraphs.ggb](RadialFollow/RadialFollowGraphs.ggb) in a [GeoGebra calculator](https://www.geogebra.org/calculator).
+To view how different parameters affect the operating curve, open [RadialFollow/RadialFollowGraphs.ggb](RadialFollowGraphs.ggb) in a [GeoGebra calculator](https://www.geogebra.org/calculator).
 
 ## Outer Radius
 Outer radius defines the max distance the cursor can lag behind the actual reading.
