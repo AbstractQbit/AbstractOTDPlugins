@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadialFollow", "RadialFollo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TouchTapping", "TouchTapping\TouchTapping.csproj", "{E0439839-9F9D-4DAD-8A7E-1ED0A027555C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A2F7556}") = "SinCursor", "SinCursor\SinCursor.csproj", "{E0439839-9F9D-4DAD-8A7E-1ED0A022555C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

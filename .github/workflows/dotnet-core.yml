@@ -13,6 +13,7 @@ jobs:
           - plugin: BezierInterpolator
           - plugin: RadialFollow
           - plugin: TouchTapping
+          - plugin: SinCursor
 
     runs-on: ubuntu-latest
     steps:
