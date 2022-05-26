@@ -13,16 +13,19 @@ namespace SinCursor
         public SinCursor() : base() { }
         public PipelinePosition Position => PipelinePosition.PostTransform;
 
-        [Property("Amount"), DefaultPropertyValue(10.0f)]
-        public float Amount
+        [Property("Amplitude"), DefaultPropertyValue(10.0f), Unit("px")]
+        public float Amplitude
         {
-            get { return amount; }
-            set { amount = Math.Clamp(value, 0.0f, 1000.0f); }
+            get { return amp; }
+            set { amp = Math.Clamp(value, 0.0f, 1000.0f); }
         }
-        private float amount;
+        private float amp;
+
+        [Property("Elastic amplitude"), DefaultPropertyValue(true)]
+        public bool ElasticAmp { get; set; }
 
 
-        [Property("Freq"), DefaultPropertyValue(10.0f)]
+        [Property("Frequency"), DefaultPropertyValue(10.0f), Unit("Hz")]
         public float Freq
         {
             get { return freq; }
@@ -30,8 +33,9 @@ namespace SinCursor
         }
         private float freq;
 
-        [Property("Elastic amplitude"), DefaultPropertyValue(true)]
-        public bool ElasticAmp { get; set; }
+        [Property("Elastic frequency"), DefaultPropertyValue(false)]
+        public bool ElasticFreq { get; set; }
+
 
         public event Action<IDeviceReport> Emit;
 
@@ -39,20 +43,28 @@ namespace SinCursor
         {
             if (value is ITabletReport report)
             {
-                if (!vec2IsFinite(thing)) thing = report.Position;
+                if (!vec2IsFinite(prevRadial)) prevRadial = report.Position;
+                if (!vec2IsFinite(prevPos)) prevPos = report.Position;
 
-                var delta = report.Position - thing;
-                thing += Vector2.Normalize(delta) * Math.Max(delta.Length() - amount, 0);
-                if (!ElasticAmp) delta = report.Position - thing;
+                var deltaRadial = report.Position - prevRadial;
+                var delta = report.Position - prevPos;
 
-                report.Position += MathF.Sin((float)stopwatch.Elapsed.TotalSeconds * MathF.PI * 2 * freq)
-                                 * Vector2.Transform(delta, Matrix3x2.CreateRotation(MathF.PI / 2));
+                phase = (phase + (float)stopwatch.Restart().TotalSeconds * freq * (ElasticFreq ? delta.Length() / amp: 1)) % 1f;
+
+                prevRadial += Vector2.Normalize(deltaRadial) * Math.Max(deltaRadial.Length() - amp, 0);
+
+                deltaRadial = report.Position - prevRadial;
+                prevPos = report.Position;
+
+                report.Position += MathF.Sin(phase * MathF.PI * 2)
+                                 * Vector2.Transform(ElasticAmp ? delta : deltaRadial, Matrix3x2.CreateRotation(MathF.PI / 2));
                 value = report;
             }
             Emit?.Invoke(value);
         }
 
-        private Vector2 thing;
+        private Vector2 prevRadial, prevPos;
+        private float phase = 0;  // 0..1
         private HPETDeltaStopwatch stopwatch = new HPETDeltaStopwatch();
         private bool vec2IsFinite(Vector2 vec) => float.IsFinite(vec.X) & float.IsFinite(vec.Y);
     }
