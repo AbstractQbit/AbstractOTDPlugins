@@ -65,6 +65,13 @@ namespace BezierInterpolator
 
         protected override void ConsumeState()
         {
+            if (State is ITiltReport tiltReport)
+            {
+                if (!vec2IsFinite(tiltTraget)) tiltTraget = tiltReport.Tilt;
+                previousTiltTraget = tiltTraget;
+                tiltTraget += tiltWeight * (tiltReport.Tilt - tiltTraget);
+            }
+
             if (State is ITabletReport report)
             {
                 var consumeDelta = (float)reportStopwatch.Restart().TotalMilliseconds;
@@ -80,13 +87,7 @@ namespace BezierInterpolator
                 previousTarget = target;
                 target = Vector3.Lerp(controlPoint, controlPointNext, 0.5f);
             }
-
-            if (State is ITiltReport tiltReport)
-            {
-                if (!vec2IsFinite(tiltTraget)) tiltTraget = tiltReport.Tilt;
-                previousTiltTraget = tiltTraget;
-                tiltTraget += tiltWeight * (tiltReport.Tilt - tiltTraget);
-            }
+            else OnEmit();
         }
 
         private Vector2 emaTarget, tiltTraget, previousTiltTraget;
