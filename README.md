@@ -16,3 +16,8 @@ Allows using tablets with touch sensitivity as a two key tapping pad.
 
 ## sin(cursor)
 Makes the cursor wiggle in a sine wave.
+
+
+## License
+This software is licensed under `GPL-3.0-only` license.
+Portions of this software are licensed under `MPL-2.0` license where specified in the file header.

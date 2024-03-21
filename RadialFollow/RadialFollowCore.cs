@@ -1,3 +1,7 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+
 using System;
 using System.Numerics;
 using OpenTabletDriver.Plugin.Timing;
@@ -70,7 +74,7 @@ namespace RadialFollow
                 xOffset = getXOffest();
                 scaleComp = getScaleComp();
             }
-            else // Calculating them with functions would ause / by 0
+            else // Calculating them with functions would cause / by 0
             {
                 xOffset = -1;
                 scaleComp = 1;
